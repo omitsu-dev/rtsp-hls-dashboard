@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surveillance Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+    .header {
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 { font-size: 1.2rem; color: #b4f0a0; }
+    .status { font-size: 0.8rem; color: #666; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 1px;
+      background: #1a1a1a;
+      padding: 1px;
+    }
+    .camera-cell {
+      background: #0a0a0a;
+      position: relative;
+    }
+    .camera-cell video {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+    .camera-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #b4f0a0;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border: 1px solid #b4f0a033;
+    }
+    .camera-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4caf50;
+    }
+    .camera-status.offline { background: #f44336; }
+    .no-cameras {
+      padding: 4rem;
+      text-align: center;
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>&gt;_ Surveillance Dashboard</h1>
+    <div class="status" id="clock"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    async function init() {
+      let data;
+      try {
+        const res = await fetch("/api/status");
+        data = await res.json();
+      } catch {
+        document.getElementById("grid").innerHTML =
+          '<div class="no-cameras">Cannot connect to stream manager API</div>';
+        return;
+      }
+
+      if (!data.cameras || data.cameras.length === 0) {
+        document.getElementById("grid").innerHTML =
+          '<div class="no-cameras">No cameras configured</div>';
+        return;
+      }
+
+      const grid = document.getElementById("grid");
+
+      for (const cam of data.cameras) {
+        const cell = document.createElement("div");
+        cell.className = "camera-cell";
+        cell.innerHTML = `
+          <video id="video-${cam.id}" muted autoplay playsinline></video>
+          <div class="camera-label">${cam.name} [${cam.id}]</div>
+          <div class="camera-status ${cam.running ? "" : "offline"}"
+               id="status-${cam.id}"></div>
+        `;
+        grid.appendChild(cell);
+
+        const video = cell.querySelector("video");
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            liveSyncDurationCount: 3,
+            liveMaxLatencyDurationCount: 6,
+            enableWorker: true,
+          });
+          hls.loadSource(cam.hlsUrl);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.ERROR, (event, errData) => {
+            if (errData.fatal) {
+              console.error(`[${cam.id}] HLS error:`, errData.type);
+              setTimeout(() => {
+                hls.loadSource(cam.hlsUrl);
+                hls.attachMedia(video);
+              }, 3000);
+            }
+          });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = cam.hlsUrl;
+        }
+      }
+
+      setInterval(() => {
+        document.getElementById("clock").textContent =
+          new Date().toLocaleString();
+      }, 1000);
+    }
+
+    init();
+  </script>
+</body>
+</html>

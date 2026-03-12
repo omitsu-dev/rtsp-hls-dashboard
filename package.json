@@ -1,0 +1,32 @@
+{
+  "name": "rtsp-hls-dashboard",
+  "version": "1.0.0",
+  "description": "Browser-based surveillance dashboard — converts RTSP camera feeds to HLS via FFmpeg",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.mjs",
+    "start:dev": "node --watch server/index.mjs",
+    "healthcheck": "bash scripts/healthcheck.sh"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omitsu-dev/rtsp-hls-dashboard"
+  },
+  "author": "omitsu-dev",
+  "license": "MIT",
+  "keywords": [
+    "rtsp",
+    "hls",
+    "ffmpeg",
+    "surveillance",
+    "dashboard",
+    "ip-camera",
+    "streaming"
+  ]
+}

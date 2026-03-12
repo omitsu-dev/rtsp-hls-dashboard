@@ -1,0 +1,26 @@
+[Unit]
+Description=Surveillance Dashboard Stream Manager
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Change to your user/group
+User=surveillance
+Group=surveillance
+# Change to your install path
+WorkingDirectory=/opt/rtsp-hls-dashboard
+ExecStart=/usr/bin/node server/index.mjs
+Restart=always
+RestartSec=10
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/rtsp-hls-dashboard/.env
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/hls /var/recordings
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
