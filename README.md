@@ -175,6 +175,8 @@ Created by **omitsu-dev**
 
 ## License
 
-MIT with attribution requirement — see [LICENSE](LICENSE) for details.
+**AGPL-3.0** with additional terms — see [LICENSE](LICENSE) for details.
 
-When using this software, please credit the original author by linking to this repository or mentioning [@omitsu_dev](https://x.com/omitsu_dev).
+- Derivative works and network use (SaaS) must also be open-sourced under AGPL-3.0
+- Attribution to the original author is required (link to this repo or mention [@omitsu_dev](https://x.com/omitsu_dev))
+- This software is provided for **lawful purposes only**. The author assumes no responsibility for unauthorized surveillance or privacy violations

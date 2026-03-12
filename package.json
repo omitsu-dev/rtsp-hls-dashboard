@@ -19,7 +19,7 @@
     "url": "https://github.com/omitsu-dev/rtsp-hls-dashboard"
   },
   "author": "omitsu-dev",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "keywords": [
     "rtsp",
     "hls",
