@@ -2,6 +2,8 @@
 
 Browser-based surveillance dashboard that converts RTSP camera feeds to HLS via FFmpeg and displays them in a responsive grid layout.
 
+![Dashboard Demo](docs/demo-screenshot.png)
+
 ## Important: FFmpeg Not Included
 
 **This repository does NOT include FFmpeg.** FFmpeg is licensed under LGPL/GPL and must be installed separately by the user. This tool invokes FFmpeg as an external subprocess — it does not link against or bundle any FFmpeg libraries.
