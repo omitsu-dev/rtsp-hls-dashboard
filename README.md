@@ -41,6 +41,7 @@ brew install ffmpeg
 ```
 
 Build from source: https://ffmpeg.org/download.html
+For a detailed walkthrough, see the [FFmpeg Installation Guide](https://32blog.com/en/ffmpeg/ffmpeg-install-guide).
 
 Verify installation:
 
